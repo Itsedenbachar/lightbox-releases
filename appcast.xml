@@ -3,6 +3,15 @@
   <channel>
     <title>Lightbox</title>
     <item>
+      <title>Lightbox 0.2.0</title>
+      <pubDate>Wed, 04 Nov 2026 22:06:05 +0100</pubDate>
+      <sparkle:version>84</sparkle:version>
+      <sparkle:shortVersionString>0.2.0</sparkle:shortVersionString>
+      <sparkle:minimumSystemVersion>15.0</sparkle:minimumSystemVersion>
+      <description><![CDATA[<p>Live GIFs on the library and boards. Paste or drop YouTube, Vimeo and other video links to get playable cards. AI sets itself up on first launch. The Delete key works, and new items no longer zoom the view in.</p>]]></description>
+      <enclosure url="https://github.com/Itsedenbachar/lightbox-releases/releases/download/v0.2.0/Lightbox-0.2.0.dmg" type="application/octet-stream" sparkle:edSignature="jKkw9BnIBoNv4x3qgh0XyZNfGAT1fDBcU0FSUMliUxlIfGKXBRWBUe9grQs7BptGtQfuDOugbxemFhI+9CEuBw==" length="3979581" />
+    </item>
+    <item>
       <title>Lightbox 0.1.0</title>
       <pubDate>Wed, 04 Nov 2026 11:11:57 +0100</pubDate>
       <sparkle:version>1</sparkle:version>
