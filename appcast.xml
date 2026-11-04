@@ -2,5 +2,14 @@
 <rss version="2.0" xmlns:sparkle="http://www.andymatuschak.org/xml-namespaces/sparkle">
   <channel>
     <title>Lightbox</title>
+    <item>
+      <title>Lightbox 0.1.0</title>
+      <pubDate>Wed, 04 Nov 2026 11:11:57 +0100</pubDate>
+      <sparkle:version>1</sparkle:version>
+      <sparkle:shortVersionString>0.1.0</sparkle:shortVersionString>
+      <sparkle:minimumSystemVersion>15.0</sparkle:minimumSystemVersion>
+      <description><![CDATA[<p>First version of Lightbox for friends.</p>]]></description>
+      <enclosure url="https://github.com/Itsedenbachar/lightbox-releases/releases/download/v0.1.0/Lightbox-0.1.0.dmg" type="application/octet-stream" sparkle:edSignature="frG3OalRz/IwG8w3x3eB5lb/HevwFVU/sai3qmmiQIlJpNxuzswyh2aLoQiw0bpgHd5rzHpddViPIDSRudIXAA==" length="5598564" />
+    </item>
   </channel>
 </rss>
