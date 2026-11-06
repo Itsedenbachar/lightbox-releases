@@ -3,6 +3,15 @@
   <channel>
     <title>Lightbox</title>
     <item>
+      <title>Moodlib 0.3.1</title>
+      <pubDate>Fri, 06 Nov 2026 16:44:40 +0100</pubDate>
+      <sparkle:version>125</sparkle:version>
+      <sparkle:shortVersionString>0.3.1</sparkle:shortVersionString>
+      <sparkle:minimumSystemVersion>15.0</sparkle:minimumSystemVersion>
+      <description><![CDATA[<p>Lightbox is now called Moodlib.</p>]]></description>
+      <enclosure url="https://github.com/Itsedenbachar/lightbox-releases/releases/download/v0.3.1/Moodlib-0.3.1.dmg" type="application/octet-stream" sparkle:edSignature="m3S0u30AiusKsU969W9LO6yB4gLxr8WopNQC1KJiPZsy/pi7uSJeuVmFs8zkVWoFjl7fCYosA8Xixf6OfxTFBw==" length="4273573" />
+    </item>
+    <item>
       <title>Lightbox 0.3.0</title>
       <pubDate>Fri, 06 Nov 2026 15:31:03 +0100</pubDate>
       <sparkle:version>114</sparkle:version>
