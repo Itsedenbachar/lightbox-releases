@@ -1,0 +1,299 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Moodlib</title>
+<meta name="description" content="Moodlib. A place for your references. Mac and iPad.">
+<meta property="og:title" content="Moodlib">
+<meta property="og:description" content="A place for your references.">
+<meta property="og:image" content="https://itsedenbachar.github.io/lightbox-releases/assets/library.jpg">
+<link rel="icon" type="image/png" href="assets/favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0a0b;
+    --ink: #f2f2f0;
+    --ink-2: #9a9a97;
+    --ink-3: #585856;
+    --line: rgba(255,255,255,0.08);
+    --frame: #161618;
+  }
+  * { box-sizing: border-box; }
+  html { background: var(--bg); color-scheme: dark; }
+  body {
+    margin: 0;
+    min-height: 100svh;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: "Hanken Grotesk", system-ui, sans-serif;
+    font-weight: 300;
+    font-size: 17px;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+  a { color: inherit; }
+
+  .page {
+    min-height: 100svh;
+    display: flex; flex-direction: column; align-items: center;
+    padding: 0 24px;
+  }
+
+  .top {
+    display: flex; flex-direction: column; align-items: center; text-align: center;
+    padding: 9vh 0 40px;
+    gap: 18px;
+  }
+  .brand { display: flex; align-items: center; gap: 14px; }
+  .brand img { width: 52px; height: 52px; border-radius: 12px; display: block; box-shadow: 0 0 0 1px var(--line); }
+  .brand span { font-size: 26px; font-weight: 400; letter-spacing: -0.01em; }
+  .line { margin: 0; color: var(--ink-2); font-size: 19px; }
+
+  .actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin-top: 10px; }
+  .btn {
+    display: inline-flex; align-items: center; gap: 10px;
+    height: 44px; padding: 0 18px 0 14px;
+    border-radius: 999px;
+    text-decoration: none;
+    font-size: 15px; font-weight: 400;
+    border: 1px solid var(--line);
+    transition: transform .25s cubic-bezier(.2,.7,.2,1), background .25s, border-color .25s;
+    white-space: nowrap;
+  }
+  .btn svg { width: 17px; height: 17px; flex: none; }
+  .btn.primary { background: var(--ink); color: #0a0a0b; border-color: var(--ink); }
+  .btn.primary:hover { transform: translateY(-1px); background: #fff; }
+  .btn.ghost { color: var(--ink); }
+  .btn.ghost:hover { border-color: rgba(255,255,255,0.22); transform: translateY(-1px); }
+  .btn.soon { color: var(--ink-3); pointer-events: none; }
+  .btn small { opacity: .6; font-size: 13px; }
+  .ver { margin: 0; font-size: 13px; color: var(--ink-3); font-variant-numeric: tabular-nums; }
+
+  /* one screen at a time */
+  .stage {
+    /* as wide as fits under the text while the whole window stays on one screen */
+    width: min(1040px, 100%, calc((100svh - 440px) * 1452 / 822));
+    perspective: 1600px;
+    padding-bottom: 56px;
+  }
+  .window {
+    position: relative;
+    border-radius: 12px;
+    background: var(--frame);
+    overflow: hidden;
+    box-shadow: 0 0 0 1px var(--line), 0 50px 120px -40px rgba(0,0,0,0.9);
+    transform: rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg));
+    transition: transform .6s cubic-bezier(.2,.7,.2,1);
+    will-change: transform;
+    cursor: grab;
+    touch-action: pan-y;
+    user-select: none;
+    -webkit-user-select: none;
+  }
+  .window.moving { transition: transform .08s linear; }
+  .window.dragging { cursor: grabbing; }
+  .window.dragging .track { transition: none; }
+  .track {
+    display: flex;
+    transform: translateX(calc(var(--i, 0) * -100% + var(--dx, 0px)));
+    transition: transform .55s cubic-bezier(.2,.7,.2,1);
+  }
+  .track img {
+    flex: 0 0 100%; width: 100%; height: auto; display: block;
+    aspect-ratio: 1452 / 822; object-fit: cover; object-position: top;
+    -webkit-user-drag: none;
+  }
+  /* a soft light that follows the mouse */
+  .sheen {
+    position: absolute; inset: 0; pointer-events: none;
+    background: radial-gradient(600px circle at var(--mx, 50%) var(--my, 50%), rgba(255,255,255,0.07), transparent 60%);
+    opacity: 0; transition: opacity .4s;
+  }
+  .window:hover .sheen { opacity: 1; }
+
+  .nav {
+    display: flex; align-items: center; justify-content: center; gap: 18px;
+    margin-top: 22px;
+  }
+  .arrow {
+    width: 36px; height: 36px; border-radius: 50%;
+    border: 1px solid var(--line); background: transparent; color: var(--ink-2);
+    display: inline-flex; align-items: center; justify-content: center; cursor: pointer;
+    transition: border-color .25s, color .25s;
+  }
+  .arrow:hover { border-color: rgba(255,255,255,0.25); color: var(--ink); }
+  .arrow svg { width: 16px; height: 16px; }
+  .dots { display: flex; gap: 10px; }
+  .dot {
+    width: 6px; height: 6px; border-radius: 50%; padding: 0; border: 0; cursor: pointer;
+    background: var(--ink-3); transition: background .3s, transform .3s;
+  }
+  .dot[aria-current="true"] { background: var(--ink); transform: scale(1.25); }
+  .caption { margin: 12px 0 0; text-align: center; color: var(--ink-3); font-size: 13px; min-height: 1.5em; }
+
+  .in { opacity: 0; transform: translateY(10px); animation: in .9s cubic-bezier(.2,.7,.2,1) forwards; }
+  .top .in:nth-child(2) { animation-delay: .1s }
+  .top .in:nth-child(3) { animation-delay: .2s }
+  .top .in:nth-child(4) { animation-delay: .25s }
+  .stage.in { animation-delay: .35s }
+  @keyframes in { to { opacity: 1; transform: none; } }
+  @media (prefers-reduced-motion: reduce) {
+    .in { animation: none; opacity: 1; transform: none; }
+    .window { transform: none !important; }
+  }
+  @media (max-width: 640px) {
+    .top { padding-top: 7vh; }
+    .brand img { width: 44px; height: 44px; }
+    .brand span { font-size: 23px; }
+    .line { font-size: 17px; }
+    .window { border-radius: 8px; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <div class="top">
+    <div class="brand in">
+      <img src="assets/icon.png" alt="" width="52" height="52">
+      <span>Moodlib</span>
+    </div>
+    <p class="line in">A place for your references.</p>
+    <div class="actions in">
+      <a class="btn primary" id="mac" href="https://github.com/Itsedenbachar/lightbox-releases/releases/latest">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/></svg>
+        Download for Mac
+      </a>
+      <a class="btn ghost soon" id="ipad" href="#" aria-disabled="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="2.5" width="16" height="19" rx="2.5"/><path d="M11 18.5h2"/></svg>
+        iPad <small>TestFlight soon</small>
+      </a>
+    </div>
+    <p class="ver in" id="ver">macOS 15 or later</p>
+  </div>
+
+  <div class="stage in">
+    <div class="window" id="window">
+      <div class="track" id="track">
+        <img src="assets/library.jpg" alt="The library: film stills on a dark field." width="1452" height="822" fetchpriority="high" draggable="false">
+        <img src="assets/board.jpg" alt="A board with stills and notes laid out." width="1452" height="822" draggable="false">
+        <img src="assets/graph.jpg" alt="The graph: boards and the frames they share." width="1452" height="822" draggable="false">
+      </div>
+      <div class="sheen"></div>
+    </div>
+    <div class="nav">
+      <button class="arrow" id="prev" aria-label="Previous"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="m15 5-7 7 7 7"/></svg></button>
+      <div class="dots" id="dots" role="tablist"></div>
+      <button class="arrow" id="next" aria-label="Next"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="m9 5 7 7-7 7"/></svg></button>
+    </div>
+    <p class="caption" id="caption"></p>
+  </div>
+
+</div>
+
+<script>
+  // Set this to the public TestFlight link once it exists.
+  const TESTFLIGHT_URL = "";
+
+  const ipad = document.getElementById("ipad");
+  if (TESTFLIGHT_URL) {
+    ipad.href = TESTFLIGHT_URL;
+    ipad.classList.remove("soon");
+    ipad.removeAttribute("aria-disabled");
+    ipad.innerHTML = ipad.innerHTML.replace("TestFlight soon", "TestFlight");
+  }
+
+  // The update feed the Mac app already reads lists the newest build; point the download at it.
+  fetch("https://raw.githubusercontent.com/Itsedenbachar/lightbox-releases/main/appcast.xml", { cache: "no-store" })
+    .then(r => r.text())
+    .then(text => {
+      const doc = new DOMParser().parseFromString(text, "text/xml");
+      const item = doc.querySelector("item");
+      if (!item) return;
+      const url = item.querySelector("enclosure")?.getAttribute("url");
+      const version = item.getElementsByTagNameNS("http://www.andymatuschak.org/xml-namespaces/sparkle", "shortVersionString")[0]?.textContent;
+      if (url) document.getElementById("mac").href = url;
+      if (version) document.getElementById("ver").textContent = `Version ${version} · macOS 15 or later`;
+    })
+    .catch(() => {});
+
+  // Slider: one screen at a time.
+  const captions = ["Library", "Board", "Graph"];
+  const win = document.getElementById("window");
+  const track = document.getElementById("track");
+  const dots = document.getElementById("dots");
+  const caption = document.getElementById("caption");
+  const count = track.children.length;
+  let index = 0;
+
+  for (let i = 0; i < count; i++) {
+    const d = document.createElement("button");
+    d.className = "dot"; d.setAttribute("role", "tab"); d.setAttribute("aria-label", captions[i]);
+    d.addEventListener("click", () => go(i));
+    dots.appendChild(d);
+  }
+  function go(i) {
+    index = (i + count) % count;
+    track.style.setProperty("--i", index);
+    [...dots.children].forEach((d, k) => d.setAttribute("aria-current", k === index ? "true" : "false"));
+    caption.textContent = captions[index];
+  }
+  document.getElementById("prev").addEventListener("click", () => go(index - 1));
+  document.getElementById("next").addEventListener("click", () => go(index + 1));
+  document.addEventListener("keydown", e => {
+    if (e.key === "ArrowLeft") go(index - 1);
+    if (e.key === "ArrowRight") go(index + 1);
+  });
+  go(0);
+
+  // Drag to slide.
+  let startX = null, dx = 0;
+  win.addEventListener("pointerdown", e => {
+    if (e.button !== 0) return;
+    startX = e.clientX; dx = 0;
+    win.classList.add("dragging");
+    win.setPointerCapture(e.pointerId);
+  });
+  win.addEventListener("pointermove", e => {
+    if (startX === null) return;
+    dx = e.clientX - startX;
+    track.style.setProperty("--dx", dx + "px");
+  });
+  function endDrag() {
+    if (startX === null) return;
+    win.classList.remove("dragging");
+    track.style.setProperty("--dx", "0px");
+    const w = win.clientWidth;
+    if (dx < -w * 0.15) go(index + 1);
+    else if (dx > w * 0.15) go(index - 1);
+    startX = null; dx = 0;
+  }
+  win.addEventListener("pointerup", endDrag);
+  win.addEventListener("pointercancel", endDrag);
+
+  // Tilt toward the mouse.
+  const fine = matchMedia("(hover: hover) and (prefers-reduced-motion: no-preference)").matches;
+  if (fine) {
+    win.addEventListener("pointermove", e => {
+      const r = win.getBoundingClientRect();
+      const x = (e.clientX - r.left) / r.width;
+      const y = (e.clientY - r.top) / r.height;
+      win.classList.add("moving");
+      win.style.setProperty("--ry", ((x - 0.5) * 6).toFixed(2) + "deg");
+      win.style.setProperty("--rx", ((0.5 - y) * 5).toFixed(2) + "deg");
+      win.style.setProperty("--mx", (x * 100).toFixed(1) + "%");
+      win.style.setProperty("--my", (y * 100).toFixed(1) + "%");
+    });
+    win.addEventListener("pointerleave", () => {
+      win.classList.remove("moving");
+      win.style.setProperty("--rx", "0deg");
+      win.style.setProperty("--ry", "0deg");
+    });
+  }
+</script>
+</body>
+</html>
