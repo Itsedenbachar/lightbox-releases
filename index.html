@@ -4,28 +4,28 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Moodlib</title>
-<meta name="description" content="Moodlib is a Mac and iPad app for visual references: a field of film stills and pictures you pan through, tagged by a local AI, laid out on boards.">
+<meta name="description" content="Moodlib. A place for your references. Mac and iPad.">
 <meta property="og:title" content="Moodlib">
-<meta property="og:description" content="A field of visual references for filmmakers. Mac and iPad.">
+<meta property="og:description" content="A place for your references.">
 <meta property="og:image" content="https://itsedenbachar.github.io/lightbox-releases/assets/library.jpg">
 <link rel="icon" type="image/png" href="assets/favicon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Hanken+Grotesk:wght@300;400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
   :root {
     --bg: #0a0a0b;
-    --bg-2: #121214;
     --ink: #f2f2f0;
-    --ink-2: #a3a3a0;
-    --ink-3: #5c5c5a;
+    --ink-2: #9a9a97;
+    --ink-3: #585856;
     --line: rgba(255,255,255,0.08);
-    --frame: #1a1a1c;
+    --frame: #161618;
   }
   * { box-sizing: border-box; }
   html { background: var(--bg); color-scheme: dark; }
   body {
     margin: 0;
+    min-height: 100svh;
     background: var(--bg);
     color: var(--ink);
     font-family: "Hanken Grotesk", system-ui, sans-serif;
@@ -37,215 +37,161 @@
   }
   a { color: inherit; }
 
-  /* faint grain so the black isn't flat */
-  body::before {
-    content: "";
-    position: fixed; inset: 0; z-index: 0; pointer-events: none;
-    opacity: 0.045;
-    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 1 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
-  }
-
   .page {
-    position: relative; z-index: 1;
-    max-width: 1120px;
-    margin: 0 auto;
-    padding: 0 24px 96px;
+    min-height: 100svh;
+    display: flex; flex-direction: column; align-items: center;
+    padding: 0 24px;
   }
 
-  header {
-    display: flex; align-items: center; justify-content: space-between;
-    padding: 28px 0 0;
+  .top {
+    display: flex; flex-direction: column; align-items: center; text-align: center;
+    padding: 9vh 0 40px;
+    gap: 18px;
   }
-  .brand { display: flex; align-items: center; gap: 12px; text-decoration: none; }
-  .brand img { width: 34px; height: 34px; border-radius: 8px; display: block; }
-  .brand span { font-size: 15px; letter-spacing: 0.02em; font-weight: 400; }
-  .ver {
-    font-size: 13px; color: var(--ink-3); letter-spacing: 0.02em;
-    font-variant-numeric: tabular-nums;
-  }
+  .brand { display: flex; align-items: center; gap: 14px; }
+  .brand img { width: 52px; height: 52px; border-radius: 12px; display: block; box-shadow: 0 0 0 1px var(--line); }
+  .brand span { font-size: 26px; font-weight: 400; letter-spacing: -0.01em; }
+  .line { margin: 0; color: var(--ink-2); font-size: 19px; }
 
-  .hero {
-    padding: 120px 0 56px;
-    display: grid;
-    grid-template-columns: minmax(0, 1fr);
-    gap: 28px;
-    max-width: 760px;
-  }
-  h1 {
-    margin: 0;
-    font-family: "Instrument Serif", Georgia, serif;
-    font-weight: 400;
-    font-size: clamp(44px, 7vw, 84px);
-    line-height: 0.98;
-    letter-spacing: -0.015em;
-    text-wrap: balance;
-  }
-  h1 em { font-style: italic; color: var(--ink-2); }
-  .lede {
-    margin: 0;
-    max-width: 540px;
-    color: var(--ink-2);
-    font-size: clamp(17px, 1.6vw, 20px);
-    text-wrap: pretty;
-  }
-
-  .actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 8px; align-items: center; }
+  .actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin-top: 10px; }
   .btn {
     display: inline-flex; align-items: center; gap: 10px;
-    height: 48px; padding: 0 20px 0 16px;
+    height: 44px; padding: 0 18px 0 14px;
     border-radius: 999px;
     text-decoration: none;
-    font-size: 15px; font-weight: 400; letter-spacing: 0.01em;
+    font-size: 15px; font-weight: 400;
     border: 1px solid var(--line);
     transition: transform .25s cubic-bezier(.2,.7,.2,1), background .25s, border-color .25s;
     white-space: nowrap;
   }
-  .btn svg { width: 18px; height: 18px; flex: none; }
+  .btn svg { width: 17px; height: 17px; flex: none; }
   .btn.primary { background: var(--ink); color: #0a0a0b; border-color: var(--ink); }
   .btn.primary:hover { transform: translateY(-1px); background: #fff; }
-  .btn.ghost { background: transparent; color: var(--ink); }
+  .btn.ghost { color: var(--ink); }
   .btn.ghost:hover { border-color: rgba(255,255,255,0.22); transform: translateY(-1px); }
   .btn.soon { color: var(--ink-3); pointer-events: none; }
-  .btn small { color: inherit; opacity: 0.6; font-size: 13px; margin-left: 2px; }
-  .fine { width: 100%; margin: 4px 0 0; font-size: 13px; color: var(--ink-3); }
-  .fine a { color: var(--ink-3); text-decoration-color: rgba(255,255,255,0.15); text-underline-offset: 3px; }
-  .fine a:hover { color: var(--ink-2); }
+  .btn small { opacity: .6; font-size: 13px; }
+  .ver { margin: 0; font-size: 13px; color: var(--ink-3); font-variant-numeric: tabular-nums; }
 
-  /* app window */
-  .shot {
+  /* one screen at a time */
+  .stage {
+    /* as wide as fits under the text while the whole window stays on one screen */
+    width: min(1040px, 100%, calc((100svh - 440px) * 1452 / 822));
+    perspective: 1600px;
+    padding-bottom: 56px;
+  }
+  .window {
     position: relative;
     border-radius: 12px;
     background: var(--frame);
-    box-shadow: 0 0 0 1px var(--line), 0 40px 120px -40px rgba(0,0,0,0.9);
     overflow: hidden;
+    box-shadow: 0 0 0 1px var(--line), 0 50px 120px -40px rgba(0,0,0,0.9);
+    transform: rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg));
+    transition: transform .6s cubic-bezier(.2,.7,.2,1);
+    will-change: transform;
+    cursor: grab;
+    touch-action: pan-y;
+    user-select: none;
+    -webkit-user-select: none;
   }
-  .shot img { display: block; width: 100%; height: auto; }
-  .shot::after {
-    content: ""; position: absolute; inset: 0; pointer-events: none;
-    border-radius: inherit;
-    box-shadow: inset 0 1px 0 rgba(255,255,255,0.06);
+  .window.moving { transition: transform .08s linear; }
+  .window.dragging { cursor: grabbing; }
+  .window.dragging .track { transition: none; }
+  .track {
+    display: flex;
+    transform: translateX(calc(var(--i, 0) * -100% + var(--dx, 0px)));
+    transition: transform .55s cubic-bezier(.2,.7,.2,1);
   }
-  .hero-shot { margin-top: 24px; }
-  .hero-shot::before {
-    /* soft light behind the window */
-    content: ""; position: absolute; left: 20%; right: 20%; top: -30%; height: 60%;
-    background: radial-gradient(closest-side, rgba(255,255,255,0.08), transparent 70%);
-    pointer-events: none; z-index: -1;
+  .track img {
+    flex: 0 0 100%; width: 100%; height: auto; display: block;
+    aspect-ratio: 1452 / 822; object-fit: cover; object-position: top;
+    -webkit-user-drag: none;
   }
+  /* a soft light that follows the mouse */
+  .sheen {
+    position: absolute; inset: 0; pointer-events: none;
+    background: radial-gradient(600px circle at var(--mx, 50%) var(--my, 50%), rgba(255,255,255,0.07), transparent 60%);
+    opacity: 0; transition: opacity .4s;
+  }
+  .window:hover .sheen { opacity: 1; }
 
-  .pair {
-    margin-top: 72px;
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 28px 32px;
+  .nav {
+    display: flex; align-items: center; justify-content: center; gap: 18px;
+    margin-top: 22px;
   }
-  .pair figure { margin: 0; }
-  .pair figcaption { margin-top: 14px; color: var(--ink-2); font-size: 15px; max-width: 42ch; }
-  .pair figcaption b { color: var(--ink); font-weight: 400; }
+  .arrow {
+    width: 36px; height: 36px; border-radius: 50%;
+    border: 1px solid var(--line); background: transparent; color: var(--ink-2);
+    display: inline-flex; align-items: center; justify-content: center; cursor: pointer;
+    transition: border-color .25s, color .25s;
+  }
+  .arrow:hover { border-color: rgba(255,255,255,0.25); color: var(--ink); }
+  .arrow svg { width: 16px; height: 16px; }
+  .dots { display: flex; gap: 10px; }
+  .dot {
+    width: 6px; height: 6px; border-radius: 50%; padding: 0; border: 0; cursor: pointer;
+    background: var(--ink-3); transition: background .3s, transform .3s;
+  }
+  .dot[aria-current="true"] { background: var(--ink); transform: scale(1.25); }
+  .caption { margin: 12px 0 0; text-align: center; color: var(--ink-3); font-size: 13px; min-height: 1.5em; }
 
-  .notes {
-    margin-top: 88px;
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 32px;
-    border-top: 1px solid var(--line);
-    padding-top: 36px;
-  }
-  .notes h3 {
-    margin: 0 0 6px;
-    font-family: "Instrument Serif", Georgia, serif; font-weight: 400;
-    font-size: 26px; letter-spacing: -0.01em;
-  }
-  .notes p { margin: 0; color: var(--ink-2); font-size: 15px; }
-
-  footer {
-    margin-top: 96px;
-    display: flex; flex-wrap: wrap; gap: 8px 24px; justify-content: space-between;
-    color: var(--ink-3); font-size: 13px;
-    border-top: 1px solid var(--line); padding-top: 24px;
-  }
-  footer a { color: var(--ink-3); text-decoration: none; }
-  footer a:hover { color: var(--ink-2); }
-
-  /* reveal on load */
-  .in { opacity: 0; transform: translateY(14px); animation: in .9s cubic-bezier(.2,.7,.2,1) forwards; }
-  .in:nth-child(1) { animation-delay: .05s }
-  .in:nth-child(2) { animation-delay: .15s }
-  .in:nth-child(3) { animation-delay: .25s }
-  .hero-shot.in { animation-delay: .4s }
+  .in { opacity: 0; transform: translateY(10px); animation: in .9s cubic-bezier(.2,.7,.2,1) forwards; }
+  .top .in:nth-child(2) { animation-delay: .1s }
+  .top .in:nth-child(3) { animation-delay: .2s }
+  .top .in:nth-child(4) { animation-delay: .25s }
+  .stage.in { animation-delay: .35s }
   @keyframes in { to { opacity: 1; transform: none; } }
-  @media (prefers-reduced-motion: reduce) { .in { animation: none; opacity: 1; transform: none; } }
-
-  @media (max-width: 720px) {
-    body { font-size: 16px; }
-    .hero { padding-top: 72px; }
-    .pair, .notes { grid-template-columns: 1fr; }
-    .shot { border-radius: 8px; }
-    .btn { height: 46px; }
+  @media (prefers-reduced-motion: reduce) {
+    .in { animation: none; opacity: 1; transform: none; }
+    .window { transform: none !important; }
+  }
+  @media (max-width: 640px) {
+    .top { padding-top: 7vh; }
+    .brand img { width: 44px; height: 44px; }
+    .brand span { font-size: 23px; }
+    .line { font-size: 17px; }
+    .window { border-radius: 8px; }
   }
 </style>
 </head>
 <body>
 <div class="page">
 
-  <header>
-    <a class="brand" href="./">
-      <img src="assets/icon.png" alt="" width="34" height="34">
+  <div class="top">
+    <div class="brand in">
+      <img src="assets/icon.png" alt="" width="52" height="52">
       <span>Moodlib</span>
-    </a>
-    <div class="ver" id="ver">macOS 15 or later</div>
-  </header>
-
-  <section class="hero">
-    <h1 class="in">A place to keep <em>what things should look like.</em></h1>
-    <p class="lede in">Moodlib is a field of film stills, photos and clips for filmmakers. Drop references in, pan through them, pull them onto boards. A local AI tags them so you can search by light, mood and place.</p>
+    </div>
+    <p class="line in">A place for your references.</p>
     <div class="actions in">
       <a class="btn primary" id="mac" href="https://github.com/Itsedenbachar/lightbox-releases/releases/latest">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/></svg>
-        Download for Mac <small id="macver"></small>
+        Download for Mac
       </a>
       <a class="btn ghost soon" id="ipad" href="#" aria-disabled="true">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="2.5" width="16" height="19" rx="2.5"/><path d="M11 18.5h2"/></svg>
         iPad <small>TestFlight soon</small>
       </a>
-      <p class="fine">Free while in development. Updates arrive inside the app. Your library syncs between Mac and iPad over iCloud.</p>
     </div>
-  </section>
-
-  <div class="shot hero-shot in">
-    <img src="assets/library.jpg" alt="The Moodlib library: rows of film stills on a dark field, with search and filters along the bottom." width="1452" height="822" fetchpriority="high">
+    <p class="ver in" id="ver">macOS 15 or later</p>
   </div>
 
-  <section class="pair">
-    <figure>
-      <div class="shot"><img src="assets/board.jpg" alt="A Moodlib board with six beach stills arranged in two rows." width="870" height="492" loading="lazy"></div>
-      <figcaption><b>Boards.</b> Lay frames out, write notes beside them, draw on them with the Pencil. Present them full screen or export a PDF.</figcaption>
-    </figure>
-    <figure>
-      <div class="shot"><img src="assets/graph.jpg" alt="The graph view: boards as bright dots connected to the frames they use." width="1452" height="822" loading="lazy"></div>
-      <figcaption><b>Graph.</b> Every board as a point, every frame it uses connected to it. See what your references have in common.</figcaption>
-    </figure>
-  </section>
-
-  <section class="notes">
-    <div>
-      <h3>Search that understands pictures</h3>
-      <p>Type “warm kitchen at night” or “wide shot, overcast beach”. The matching runs on your Mac, so nothing leaves your library.</p>
+  <div class="stage in">
+    <div class="window" id="window">
+      <div class="track" id="track">
+        <img src="assets/library.jpg" alt="The library: film stills on a dark field." width="1452" height="822" fetchpriority="high" draggable="false">
+        <img src="assets/board.jpg" alt="A board with six stills laid out." width="870" height="492" draggable="false">
+        <img src="assets/graph.jpg" alt="The graph: boards and the frames they share." width="1452" height="822" draggable="false">
+      </div>
+      <div class="sheen"></div>
     </div>
-    <div>
-      <h3>Stills from any video</h3>
-      <p>Paste a YouTube or Vimeo link and grab the exact frame you mean, at the stream’s full sharpness.</p>
+    <div class="nav">
+      <button class="arrow" id="prev" aria-label="Previous"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="m15 5-7 7 7 7"/></svg></button>
+      <div class="dots" id="dots" role="tablist"></div>
+      <button class="arrow" id="next" aria-label="Next"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="m9 5 7 7-7 7"/></svg></button>
     </div>
-    <div>
-      <h3>Yours, on disk</h3>
-      <p>The library is a folder of files you own. Sync it to the iPad over iCloud, draw on it with the Pencil, and have it back on the Mac.</p>
-    </div>
-  </section>
-
-  <footer>
-    <span>Made by Eden Bachar</span>
-    <span><a href="https://github.com/Itsedenbachar/lightbox-releases/releases">All releases</a></span>
-  </footer>
+    <p class="caption" id="caption"></p>
+  </div>
 
 </div>
 
@@ -271,12 +217,83 @@
       const url = item.querySelector("enclosure")?.getAttribute("url");
       const version = item.getElementsByTagNameNS("http://www.andymatuschak.org/xml-namespaces/sparkle", "shortVersionString")[0]?.textContent;
       if (url) document.getElementById("mac").href = url;
-      if (version) {
-        document.getElementById("macver").textContent = version;
-        document.getElementById("ver").textContent = `Version ${version} · macOS 15 or later`;
-      }
+      if (version) document.getElementById("ver").textContent = `Version ${version} · macOS 15 or later`;
     })
     .catch(() => {});
+
+  // Slider: one screen at a time.
+  const captions = ["Library", "Board", "Graph"];
+  const win = document.getElementById("window");
+  const track = document.getElementById("track");
+  const dots = document.getElementById("dots");
+  const caption = document.getElementById("caption");
+  const count = track.children.length;
+  let index = 0;
+
+  for (let i = 0; i < count; i++) {
+    const d = document.createElement("button");
+    d.className = "dot"; d.setAttribute("role", "tab"); d.setAttribute("aria-label", captions[i]);
+    d.addEventListener("click", () => go(i));
+    dots.appendChild(d);
+  }
+  function go(i) {
+    index = (i + count) % count;
+    track.style.setProperty("--i", index);
+    [...dots.children].forEach((d, k) => d.setAttribute("aria-current", k === index ? "true" : "false"));
+    caption.textContent = captions[index];
+  }
+  document.getElementById("prev").addEventListener("click", () => go(index - 1));
+  document.getElementById("next").addEventListener("click", () => go(index + 1));
+  document.addEventListener("keydown", e => {
+    if (e.key === "ArrowLeft") go(index - 1);
+    if (e.key === "ArrowRight") go(index + 1);
+  });
+  go(0);
+
+  // Drag to slide.
+  let startX = null, dx = 0;
+  win.addEventListener("pointerdown", e => {
+    if (e.button !== 0) return;
+    startX = e.clientX; dx = 0;
+    win.classList.add("dragging");
+    win.setPointerCapture(e.pointerId);
+  });
+  win.addEventListener("pointermove", e => {
+    if (startX === null) return;
+    dx = e.clientX - startX;
+    track.style.setProperty("--dx", dx + "px");
+  });
+  function endDrag() {
+    if (startX === null) return;
+    win.classList.remove("dragging");
+    track.style.setProperty("--dx", "0px");
+    const w = win.clientWidth;
+    if (dx < -w * 0.15) go(index + 1);
+    else if (dx > w * 0.15) go(index - 1);
+    startX = null; dx = 0;
+  }
+  win.addEventListener("pointerup", endDrag);
+  win.addEventListener("pointercancel", endDrag);
+
+  // Tilt toward the mouse.
+  const fine = matchMedia("(hover: hover) and (prefers-reduced-motion: no-preference)").matches;
+  if (fine) {
+    win.addEventListener("pointermove", e => {
+      const r = win.getBoundingClientRect();
+      const x = (e.clientX - r.left) / r.width;
+      const y = (e.clientY - r.top) / r.height;
+      win.classList.add("moving");
+      win.style.setProperty("--ry", ((x - 0.5) * 6).toFixed(2) + "deg");
+      win.style.setProperty("--rx", ((0.5 - y) * 5).toFixed(2) + "deg");
+      win.style.setProperty("--mx", (x * 100).toFixed(1) + "%");
+      win.style.setProperty("--my", (y * 100).toFixed(1) + "%");
+    });
+    win.addEventListener("pointerleave", () => {
+      win.classList.remove("moving");
+      win.style.setProperty("--rx", "0deg");
+      win.style.setProperty("--ry", "0deg");
+    });
+  }
 </script>
 </body>
 </html>
