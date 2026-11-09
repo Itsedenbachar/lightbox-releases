@@ -3,6 +3,15 @@
   <channel>
     <title>Lightbox</title>
     <item>
+      <title>Moodlib 0.4.0</title>
+      <pubDate>Mon, 09 Nov 2026 17:18:52 +0100</pubDate>
+      <sparkle:version>149</sparkle:version>
+      <sparkle:shortVersionString>0.4.0</sparkle:shortVersionString>
+      <sparkle:minimumSystemVersion>15.0</sparkle:minimumSystemVersion>
+      <description><![CDATA[<p>Claude and ChatGPT can now use your library to find frames and write shot lists (turn it on in Settings). New Settings design. Scrolling in Settings no longer moves the board. Shows Pencil marks and handwritten pages from the iPad.</p>]]></description>
+      <enclosure url="https://github.com/Itsedenbachar/lightbox-releases/releases/download/v0.4.0/Moodlib-0.4.0.dmg" type="application/octet-stream" sparkle:edSignature="m7WtF1OO3bzZEtXxxACUpaQkEDUHnsYNFIJsr0nAiGXM13DizRgvOL59BqtPixBruiuQYTfndN8w0EyPfGnTAg==" length="4570207" />
+    </item>
+    <item>
       <title>Moodlib 0.3.1</title>
       <pubDate>Fri, 06 Nov 2026 16:44:40 +0100</pubDate>
       <sparkle:version>125</sparkle:version>
