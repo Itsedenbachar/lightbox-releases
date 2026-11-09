@@ -1,0 +1,282 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Moodlib</title>
+<meta name="description" content="Moodlib is a Mac and iPad app for visual references: a field of film stills and pictures you pan through, tagged by a local AI, laid out on boards.">
+<meta property="og:title" content="Moodlib">
+<meta property="og:description" content="A field of visual references for filmmakers. Mac and iPad.">
+<meta property="og:image" content="https://itsedenbachar.github.io/lightbox-releases/assets/library.jpg">
+<link rel="icon" type="image/png" href="assets/favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Hanken+Grotesk:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0a0b;
+    --bg-2: #121214;
+    --ink: #f2f2f0;
+    --ink-2: #a3a3a0;
+    --ink-3: #5c5c5a;
+    --line: rgba(255,255,255,0.08);
+    --frame: #1a1a1c;
+  }
+  * { box-sizing: border-box; }
+  html { background: var(--bg); color-scheme: dark; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: "Hanken Grotesk", system-ui, sans-serif;
+    font-weight: 300;
+    font-size: 17px;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+  a { color: inherit; }
+
+  /* faint grain so the black isn't flat */
+  body::before {
+    content: "";
+    position: fixed; inset: 0; z-index: 0; pointer-events: none;
+    opacity: 0.045;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 1 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+  }
+
+  .page {
+    position: relative; z-index: 1;
+    max-width: 1120px;
+    margin: 0 auto;
+    padding: 0 24px 96px;
+  }
+
+  header {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 28px 0 0;
+  }
+  .brand { display: flex; align-items: center; gap: 12px; text-decoration: none; }
+  .brand img { width: 34px; height: 34px; border-radius: 8px; display: block; }
+  .brand span { font-size: 15px; letter-spacing: 0.02em; font-weight: 400; }
+  .ver {
+    font-size: 13px; color: var(--ink-3); letter-spacing: 0.02em;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .hero {
+    padding: 120px 0 56px;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 28px;
+    max-width: 760px;
+  }
+  h1 {
+    margin: 0;
+    font-family: "Instrument Serif", Georgia, serif;
+    font-weight: 400;
+    font-size: clamp(44px, 7vw, 84px);
+    line-height: 0.98;
+    letter-spacing: -0.015em;
+    text-wrap: balance;
+  }
+  h1 em { font-style: italic; color: var(--ink-2); }
+  .lede {
+    margin: 0;
+    max-width: 540px;
+    color: var(--ink-2);
+    font-size: clamp(17px, 1.6vw, 20px);
+    text-wrap: pretty;
+  }
+
+  .actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 8px; align-items: center; }
+  .btn {
+    display: inline-flex; align-items: center; gap: 10px;
+    height: 48px; padding: 0 20px 0 16px;
+    border-radius: 999px;
+    text-decoration: none;
+    font-size: 15px; font-weight: 400; letter-spacing: 0.01em;
+    border: 1px solid var(--line);
+    transition: transform .25s cubic-bezier(.2,.7,.2,1), background .25s, border-color .25s;
+    white-space: nowrap;
+  }
+  .btn svg { width: 18px; height: 18px; flex: none; }
+  .btn.primary { background: var(--ink); color: #0a0a0b; border-color: var(--ink); }
+  .btn.primary:hover { transform: translateY(-1px); background: #fff; }
+  .btn.ghost { background: transparent; color: var(--ink); }
+  .btn.ghost:hover { border-color: rgba(255,255,255,0.22); transform: translateY(-1px); }
+  .btn.soon { color: var(--ink-3); pointer-events: none; }
+  .btn small { color: inherit; opacity: 0.6; font-size: 13px; margin-left: 2px; }
+  .fine { width: 100%; margin: 4px 0 0; font-size: 13px; color: var(--ink-3); }
+  .fine a { color: var(--ink-3); text-decoration-color: rgba(255,255,255,0.15); text-underline-offset: 3px; }
+  .fine a:hover { color: var(--ink-2); }
+
+  /* app window */
+  .shot {
+    position: relative;
+    border-radius: 12px;
+    background: var(--frame);
+    box-shadow: 0 0 0 1px var(--line), 0 40px 120px -40px rgba(0,0,0,0.9);
+    overflow: hidden;
+  }
+  .shot img { display: block; width: 100%; height: auto; }
+  .shot::after {
+    content: ""; position: absolute; inset: 0; pointer-events: none;
+    border-radius: inherit;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.06);
+  }
+  .hero-shot { margin-top: 24px; }
+  .hero-shot::before {
+    /* soft light behind the window */
+    content: ""; position: absolute; left: 20%; right: 20%; top: -30%; height: 60%;
+    background: radial-gradient(closest-side, rgba(255,255,255,0.08), transparent 70%);
+    pointer-events: none; z-index: -1;
+  }
+
+  .pair {
+    margin-top: 72px;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 28px 32px;
+  }
+  .pair figure { margin: 0; }
+  .pair figcaption { margin-top: 14px; color: var(--ink-2); font-size: 15px; max-width: 42ch; }
+  .pair figcaption b { color: var(--ink); font-weight: 400; }
+
+  .notes {
+    margin-top: 88px;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 32px;
+    border-top: 1px solid var(--line);
+    padding-top: 36px;
+  }
+  .notes h3 {
+    margin: 0 0 6px;
+    font-family: "Instrument Serif", Georgia, serif; font-weight: 400;
+    font-size: 26px; letter-spacing: -0.01em;
+  }
+  .notes p { margin: 0; color: var(--ink-2); font-size: 15px; }
+
+  footer {
+    margin-top: 96px;
+    display: flex; flex-wrap: wrap; gap: 8px 24px; justify-content: space-between;
+    color: var(--ink-3); font-size: 13px;
+    border-top: 1px solid var(--line); padding-top: 24px;
+  }
+  footer a { color: var(--ink-3); text-decoration: none; }
+  footer a:hover { color: var(--ink-2); }
+
+  /* reveal on load */
+  .in { opacity: 0; transform: translateY(14px); animation: in .9s cubic-bezier(.2,.7,.2,1) forwards; }
+  .in:nth-child(1) { animation-delay: .05s }
+  .in:nth-child(2) { animation-delay: .15s }
+  .in:nth-child(3) { animation-delay: .25s }
+  .hero-shot.in { animation-delay: .4s }
+  @keyframes in { to { opacity: 1; transform: none; } }
+  @media (prefers-reduced-motion: reduce) { .in { animation: none; opacity: 1; transform: none; } }
+
+  @media (max-width: 720px) {
+    body { font-size: 16px; }
+    .hero { padding-top: 72px; }
+    .pair, .notes { grid-template-columns: 1fr; }
+    .shot { border-radius: 8px; }
+    .btn { height: 46px; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <header>
+    <a class="brand" href="./">
+      <img src="assets/icon.png" alt="" width="34" height="34">
+      <span>Moodlib</span>
+    </a>
+    <div class="ver" id="ver">macOS 15 or later</div>
+  </header>
+
+  <section class="hero">
+    <h1 class="in">A place to keep <em>what things should look like.</em></h1>
+    <p class="lede in">Moodlib is a field of film stills, photos and clips for filmmakers. Drop references in, pan through them, pull them onto boards. A local AI tags them so you can search by light, mood and place.</p>
+    <div class="actions in">
+      <a class="btn primary" id="mac" href="https://github.com/Itsedenbachar/lightbox-releases/releases/latest">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/></svg>
+        Download for Mac <small id="macver"></small>
+      </a>
+      <a class="btn ghost soon" id="ipad" href="#" aria-disabled="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="2.5" width="16" height="19" rx="2.5"/><path d="M11 18.5h2"/></svg>
+        iPad <small>TestFlight soon</small>
+      </a>
+      <p class="fine">Free while in development. Updates arrive inside the app. Your library syncs between Mac and iPad over iCloud.</p>
+    </div>
+  </section>
+
+  <div class="shot hero-shot in">
+    <img src="assets/library.jpg" alt="The Moodlib library: rows of film stills on a dark field, with search and filters along the bottom." width="1452" height="822" fetchpriority="high">
+  </div>
+
+  <section class="pair">
+    <figure>
+      <div class="shot"><img src="assets/board.jpg" alt="A Moodlib board with six beach stills arranged in two rows." width="870" height="492" loading="lazy"></div>
+      <figcaption><b>Boards.</b> Lay frames out, write notes beside them, draw on them with the Pencil. Present them full screen or export a PDF.</figcaption>
+    </figure>
+    <figure>
+      <div class="shot"><img src="assets/graph.jpg" alt="The graph view: boards as bright dots connected to the frames they use." width="1452" height="822" loading="lazy"></div>
+      <figcaption><b>Graph.</b> Every board as a point, every frame it uses connected to it. See what your references have in common.</figcaption>
+    </figure>
+  </section>
+
+  <section class="notes">
+    <div>
+      <h3>Search that understands pictures</h3>
+      <p>Type “warm kitchen at night” or “wide shot, overcast beach”. The matching runs on your Mac, so nothing leaves your library.</p>
+    </div>
+    <div>
+      <h3>Stills from any video</h3>
+      <p>Paste a YouTube or Vimeo link and grab the exact frame you mean, at the stream’s full sharpness.</p>
+    </div>
+    <div>
+      <h3>Yours, on disk</h3>
+      <p>The library is a folder of files you own. Sync it to the iPad over iCloud, draw on it with the Pencil, and have it back on the Mac.</p>
+    </div>
+  </section>
+
+  <footer>
+    <span>Made by Eden Bachar</span>
+    <span><a href="https://github.com/Itsedenbachar/lightbox-releases/releases">All releases</a></span>
+  </footer>
+
+</div>
+
+<script>
+  // Set this to the public TestFlight link once it exists.
+  const TESTFLIGHT_URL = "";
+
+  const ipad = document.getElementById("ipad");
+  if (TESTFLIGHT_URL) {
+    ipad.href = TESTFLIGHT_URL;
+    ipad.classList.remove("soon");
+    ipad.removeAttribute("aria-disabled");
+    ipad.innerHTML = ipad.innerHTML.replace("TestFlight soon", "TestFlight");
+  }
+
+  // The update feed the Mac app already reads lists the newest build; point the download at it.
+  fetch("https://raw.githubusercontent.com/Itsedenbachar/lightbox-releases/main/appcast.xml", { cache: "no-store" })
+    .then(r => r.text())
+    .then(text => {
+      const doc = new DOMParser().parseFromString(text, "text/xml");
+      const item = doc.querySelector("item");
+      if (!item) return;
+      const url = item.querySelector("enclosure")?.getAttribute("url");
+      const version = item.getElementsByTagNameNS("http://www.andymatuschak.org/xml-namespaces/sparkle", "shortVersionString")[0]?.textContent;
+      if (url) document.getElementById("mac").href = url;
+      if (version) {
+        document.getElementById("macver").textContent = version;
+        document.getElementById("ver").textContent = `Version ${version} · macOS 15 or later`;
+      }
+    })
+    .catch(() => {});
+</script>
+</body>
+</html>
