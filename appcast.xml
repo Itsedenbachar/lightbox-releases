@@ -3,6 +3,15 @@
   <channel>
     <title>Lightbox</title>
     <item>
+      <title>Moodlib 0.6.0</title>
+      <pubDate>Wed, 11 Nov 2026 13:09:21 +0100</pubDate>
+      <sparkle:version>190</sparkle:version>
+      <sparkle:shortVersionString>0.6.0</sparkle:shortVersionString>
+      <sparkle:minimumSystemVersion>15.0</sparkle:minimumSystemVersion>
+      <description><![CDATA[<p>A short tour for first-time use. Find Lost References brings stray pictures into your library, grouped by folder in Graph. Smoother library and graph, gentler AI tagging, a tidier browser panel.</p>]]></description>
+      <enclosure url="https://github.com/Itsedenbachar/lightbox-releases/releases/download/v0.6.0/Moodlib-0.6.0.dmg" type="application/octet-stream" sparkle:edSignature="JWd8acGEsxzUNnT6UyC1md5X9Nwf32T6pJNHLuft/jBG1P9guSl8xcBvGmWtH5IKZkjYp2Lwifkx1ZzBoD+jCQ==" length="5156926" />
+    </item>
+    <item>
       <title>Moodlib 0.5.0</title>
       <pubDate>Tue, 10 Nov 2026 10:20:25 +0100</pubDate>
       <sparkle:version>166</sparkle:version>
