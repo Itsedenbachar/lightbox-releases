@@ -3,6 +3,15 @@
   <channel>
     <title>Lightbox</title>
     <item>
+      <title>Moodlib 0.9.0</title>
+      <pubDate>Fri, 13 Nov 2026 11:12:54 +0100</pubDate>
+      <sparkle:version>219</sparkle:version>
+      <sparkle:shortVersionString>0.9.0</sparkle:shortVersionString>
+      <sparkle:minimumSystemVersion>15.0</sparkle:minimumSystemVersion>
+      <description><![CDATA[<p>Boards: resize pictures and notes from any corner, add notes and titles from the bottom bar, and copy, paste or duplicate anything (Cmd-C, Cmd-V, Cmd-D). Export selected frames, or drag them straight into other apps. The Graph is faster on big libraries.</p>]]></description>
+      <enclosure url="https://github.com/Itsedenbachar/lightbox-releases/releases/download/v0.9.0/Moodlib-0.9.0.dmg" type="application/octet-stream" sparkle:edSignature="Y0kNjncOKKAYMZ2XudoHikTx7SRUqfj6IuayyP8kOfZYCsZMxFtVC1vJrTBxtQHfwaofcSaPoz0p56hB6VgcAQ==" length="5497727" />
+    </item>
+    <item>
       <title>Moodlib 0.8.0</title>
       <pubDate>Fri, 13 Nov 2026 09:39:31 +0100</pubDate>
       <sparkle:version>206</sparkle:version>
